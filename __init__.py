@@ -19,11 +19,12 @@
 ''' Code is written by Samuli Riihikoski (haikalle) haikalle@gmail.com '''
 
 bl_info = {
-    "name": "NodeCustomBuilder",
+    "name": "NodeCustomBuilder节点转换节点转换为json文件,将选中的节点存为预设,非节点组,注意插件文件夹一定要为NodeCustomBuilder,不然报错",
     "author": "Kalle-Samuli Riihikoski (haikalle)",
     "version": (0, 0, 70),
     "blender": (2, 80, 0),
     "description": "Save/Load your custom node trees.",
+    "doc_url": "https://github.com/SamuliRiihikoski/NodeCustomBuilder", 
     "warning": "",
     "category": "3D View",
 }
@@ -42,9 +43,9 @@ from . import read_json
 class NodeCustomBuilderPreferences(bpy.types.AddonPreferences):
     bl_idname = __package__
     
-    library_dir = os.path.expanduser("~")	         
-    library_dir = os.path.join(library_dir, "Documents", "NodeCustomBuilder")
-
+    # library_dir = os.path.expanduser("~")	         
+    # library_dir = os.path.join(library_dir, "Documents", "NodeCustomBuilder")
+    library_dir = "D:\\Blender\\BlenderAssets\\A材质资产\\NodeCustomBuilder"###默认路径修改
     user_lib_path: StringProperty(name="Library Path",
                                   default=library_dir,
                                   subtype='DIR_PATH')
@@ -56,8 +57,9 @@ class NodeCustomBuilderPreferences(bpy.types.AddonPreferences):
         row.prop(self, "user_lib_path", expand=True)
 
 def get_library_path():
-    library_dir = os.path.expanduser("~")
-    library_dir = os.path.join(library_dir, "Documents", "NodeCustomBuilder")
+    #library_dir = os.path.expanduser("~")
+    #library_dir = os.path.join(library_dir, "Documents", "NodeCustomBuilder")
+    library_dir = "D:\\Blender\\BlenderAssets\\A材质资产\\NodeCustomBuilder"
     library_dir = bpy.context.preferences.addons["NodeCustomBuilder"].preferences.user_lib_path
     return library_dir
 
@@ -422,12 +424,11 @@ class ITEM_UL_items(UIList):
         row = layout.row()
         row.label(text=item.name)
 
-class CUSTOM_OT_actions(bpy.types.Operator):
-    """Move items up and down, add and remove"""
+class CUSTOM_OT_actions(bpy.types.Operator):   
     bl_idname = "custom.list_action"
-    bl_label = "List Actions"
-    bl_description = "Move items up and down, add and remove"
-    bl_options = {'REGISTER'}
+    bl_label = ""
+    bl_description = "Add,Remove(不可逆)!,Rename,Refresh"
+    bl_options = {"REGISTER", "UNDO"}
 
     action: bpy.props.EnumProperty(
         items=(
@@ -435,7 +436,7 @@ class CUSTOM_OT_actions(bpy.types.Operator):
             ('RENAME', "Rename", ""),
             ('UP', "Up", ""),
             ('DOWN', "Down", ""),
-            ('REMOVE', "Remove", ""),
+            ('REMOVE', "Remove", "删除后不可撤销！！！"),
             ('REMOVE_FOLDER', "Remove", ""),
             ('ADD_FOLDER', "Add", ""),
             ('ADD', "Add", "")))
